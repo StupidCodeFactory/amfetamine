@@ -8,10 +8,9 @@ module Amfetamine
       args = "[Amfetamine] #{args.to_s}"
       if defined?(Rails)
         Rails.logger.send(method,args)
+      # Yeah, temporarilly :-))
       elsif defined?(Merb)
         Merb.logger.send(method,args)
-      else
-        puts args
       end
     end
   end

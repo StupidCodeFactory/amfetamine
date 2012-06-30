@@ -86,7 +86,6 @@ describe Amfetamine::Base do
         end
         new_dummy.should be_a(Dummy)
         new_dummy.should_not be_new
-        puts new_dummy.cache_key
         new_dummy.should be_cached
       end
 

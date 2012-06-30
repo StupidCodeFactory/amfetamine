@@ -1,11 +1,6 @@
 require "bundler/gem_tasks"
+require 'rspec/core/rake_task'
 
-task :default => [:rspec]
+RSpec::Core::RakeTask.new(:spec)
 
-task :bundle_dependencies do
-  sh "bundle"
-end
-
-task :rspec do
-  sh "rspec spec"
-end
+task :default => [:spec]
