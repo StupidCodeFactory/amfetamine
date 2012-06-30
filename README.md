@@ -210,3 +210,4 @@ Contributors
 ============
 
 * Timon Vonk
+* Matt Bridges
