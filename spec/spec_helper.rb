@@ -1,7 +1,10 @@
 require 'simplecov'
 require 'simplecov-rcov'
-SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
-SimpleCov.start
+
+if ENV['COVERAGE'] && (RUBY_ENGINE == "ruby")
+  SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
+  SimpleCov.start
+end
 
 require File.expand_path("../../lib/amfetamine.rb", __FILE__)
 require 'helpers/active_model_lint'
