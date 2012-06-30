@@ -1,7 +1,10 @@
 Amfetamine, A REST object abstractavaganza
 ====================================
 
-> Makes your API calls f-f-f-ast!
+> Rest abstraction on steroids that makes shit go boom!
+
+[![Build Status](https://secure.travis-ci.org/Exvo/amfetamine.png)](http://travis-ci.org/Exvo/amfetamine)
+
 
 Amfetamine adds an ActiveModel like interface to your REST services with support for any HTTP(arty) client and caching using memcached.
 
