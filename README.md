@@ -176,7 +176,7 @@ Future Features & TODO
 
 * Smarter caching
 * Better support for custom methods
-* Support for Reddis
+* Support for Redis
 * Automatic determining of attributes and validations
 * Supporting any amount of nested relationships
 * Supporting interobject relationship (database versus service)
