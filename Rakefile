@@ -1,6 +1,6 @@
 require "bundler/gem_tasks"
 
-task :default => [:bundle_dependencies, :rspec]
+task :default => [:rspec]
 
 task :bundle_dependencies do
   sh "bundle"
