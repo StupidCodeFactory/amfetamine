@@ -19,6 +19,7 @@ require 'helpers/fakeweb_responses'
 require 'json'
 
 #Fakeweb to stub server responses, still want to to integration tests on the rest client
+FakeWeb.allow_net_connect = false
 def build(object)
   {
     :dummy => lambda { Dummy.new({:title => 'Dummy', :description => 'Crash me!', :id => Dummy.children.length + 1})},
