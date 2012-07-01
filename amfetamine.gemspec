@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Timon Vonk"]
   s.email       = ["timon@exvo.com"]
   s.homepage    = "http://www.github.com/exvo/amfetamine"
-  s.summary     = %q{Wraps REST to objects}
-  s.description = %q{Wraps REST to objects, provides caching and makes your app go Bzzz!}
+  s.summary     = %q{REST object abstraction on steroids the makes shit go boom!}
+  s.description = %q{Provides an interface to REST apis with objects and a cache. Zero effort!}
 
   s.rubyforge_project = "amfetamine"
 
@@ -22,7 +22,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec"
   s.add_development_dependency "guard"
   s.add_development_dependency "guard-rspec"
-  #s.add_development_dependency "growl_notify"
   s.add_development_dependency "ruby_gntp"
   s.add_development_dependency "httparty"
   s.add_development_dependency "fakeweb"
