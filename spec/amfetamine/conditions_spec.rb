@@ -25,7 +25,7 @@ describe "Amfetamine REST Helpers with conditions" do
       dummy.destroy
     end
 
-    lambda {Dummy.all(:conditions => query) }.should raise_exception(FakeWeb::NetConnectNotAllowedError)
+    lambda {Dummy.all(:conditions => query) }.should raise_exception
   end
 
   it "should work with nested resource #all" do
@@ -58,7 +58,7 @@ describe "Amfetamine REST Helpers with conditions" do
     
     child.should_not be_cached
 
-    lambda {dummy.children.all(:conditions => query, :force => true) }.should raise_exception(FakeWeb::NetConnectNotAllowedError)
+    lambda {dummy.children.all(:conditions => query, :force => true) }.should raise_exception
   end
 
   it "should work with normal resource #find" do
