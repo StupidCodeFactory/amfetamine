@@ -11,6 +11,8 @@ module Amfetamine
       # Yeah, temporarilly :-))
       elsif defined?(Merb)
         Merb.logger.send(method,args)
+       else
+         puts args
       end
     end
   end
