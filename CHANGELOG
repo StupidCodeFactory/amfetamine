@@ -1,3 +1,7 @@
+0.2.11
+- Rewrote specs to be idempotent when randomized
+- Fixed a lot of specs for travis in general
+
 0.2.10
 - Removed verbosity from tests 
 - Dropped support for Ruby 1.8.7
