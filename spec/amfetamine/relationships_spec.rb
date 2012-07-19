@@ -58,12 +58,14 @@ describe Amfetamine::Relationships do
     it "should be possible to get all children if not in memory" do
       Dummy.cache.flush
       new_dummy = nil
-      stub_single_response(dummy) do
+      Dummy.prevent_external_connections! do |r|
+        r.get { dummy }
         new_dummy = Dummy.find(dummy.id)
       end
         
       children = nil
-      stub_nested_all_response(dummy,child) do
+      Dummy.prevent_external_connections! do |r|
+        r.get { [child] }
         children = new_dummy.children.all
       end
       children.should include(child)

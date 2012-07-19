@@ -46,7 +46,8 @@ describe Amfetamine::Base do
       
       it "should return nil if object not found" do
         lambda {
-        stub_nil_response do
+        Dummy.prevent_external_connections! do |r|
+          r.get(:code => 404) {}
           Dummy.find(dummy.id * 2).should be_nil
         end
         }.should raise_exception(Amfetamine::RecordNotFound)
@@ -59,7 +60,8 @@ describe Amfetamine::Base do
         dummy.instance_variable_set('@notsaved', false)
         dummy2.instance_variable_set('@notsaved', false)
 
-        stub_all_response(dummy, dummy2) do
+        Dummy.prevent_external_connections! do |r|
+          r.get {[dummy,dummy2]}
           dummies = Dummy.all
         end
 
@@ -69,34 +71,35 @@ describe Amfetamine::Base do
       end
       
       it "should return empty array if objects are not present" do
-        dummies = []
-        stub_all_nil_response do
-          dummies = Dummy.all
-        end
+        Dummy.prevent_external_connections! do |r|
+          r.get(:code => 200) {[]}
 
-        dummies.should eq([])
+          Dummy.all.should be_empty
+        end
       end
     end
 
     context "#create" do
       it "should create an object if data is correct" do
-        new_dummy = nil
-        stub_post_response do
+        Dummy.prevent_external_connections! do |r|
+          r.post(:code => 201) {}
+
           new_dummy = Dummy.create({:title => 'test', :description => 'blabla'})
+          new_dummy.should be_a(Dummy)
+          new_dummy.should_not be_new
+          new_dummy.should be_cached
         end
-        new_dummy.should be_a(Dummy)
-        new_dummy.should_not be_new
-        new_dummy.should be_cached
       end
 
       it "should return errors if data is incorrect" do
-        new_dummy = nil
-        stub_post_errornous_response do
+        Dummy.prevent_external_connections! do |r|
+          r.post(:code => 422) {{:description => ['can\'t be blank']}}
           new_dummy = Dummy.create({:title => 'test'})
+          new_dummy.should be_new
+          new_dummy.errors.messages.should eq({:description => ['can\'t be blank']})
+          new_dummy.should_not be_cached
         end
-        new_dummy.should be_new
-        new_dummy.errors.messages.should eq({:description => ['can\'t be blank']})
-        new_dummy.should_not be_cached
+
       end
     end
 
@@ -106,8 +109,9 @@ describe Amfetamine::Base do
       end
 
       it "should update if response is succesful" do
-        Dummy.prevent_external_connections! do |allowed|
-          allowed.put {}
+        Dummy.prevent_external_connections! do |r|
+          r.put {}
+
           dummy.update_attributes({:title => 'zomg'})
         end
 
@@ -117,9 +121,12 @@ describe Amfetamine::Base do
       end
 
       it "should show errors if response is not succesful" do
-        stub_update_errornous_response do
+        Dummy.prevent_external_connections! do |r|
+          r.put(:code => 422) { [:title => ['can\'t be blank']]}
+
           dummy.update_attributes({:title => ''})
         end
+
         dummy.should_not be_new
         dummy.errors.messages.should eq({:title => ['can\'t be blank']})
       end
@@ -132,14 +139,18 @@ describe Amfetamine::Base do
     end
 
     context "#save" do
+      let(:dummy2) { dummy.dup}
       before(:each) do
         dummy.send(:notsaved=, true)
+        dummy2 = dummy.dup
+        dummy.send(:id=, nil)
       end
 
       it "should update the id if data is received from post" do
         old_id = dummy.id
-        stub_post_response(dummy) do
-          dummy.send(:id=, nil)
+        Dummy.prevent_external_connections! do |r|
+          r.post(code:201) { dummy2 }
+
           dummy.save
         end
         dummy.id.should == old_id
@@ -150,7 +161,8 @@ describe Amfetamine::Base do
         dummy.send(:notsaved=, false)
         old_id = dummy.id
         dummy.title = "BLABLABLA"
-        stub_update_response(dummy) do
+        Dummy.prevent_external_connections! do |r|
+          r.put {dummy}
           dummy.title = "BLABLABLA"
           dummy.save
         end
@@ -166,16 +178,19 @@ describe Amfetamine::Base do
       end
 
       it "should delete the object if response is succesful" do
-        stub_delete_response do
+        Dummy.prevent_external_connections! do |r|
+          r.delete {}
           dummy.destroy
         end
+
         dummy.should be_new
         dummy.id.should be_nil
         dummy.should_not be_cached
       end
 
       it "should return false if delete failed" do
-        stub_delete_errornous_response do
+        Dummy.prevent_external_connections! do |r|
+          r.delete(code: 422) {}
           dummy.destroy
         end
         dummy.should_not be_new

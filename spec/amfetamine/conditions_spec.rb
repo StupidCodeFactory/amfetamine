@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe "Amfetamine REST Helpers with conditions" do
   it "should work regular #all" do
+    # TODO: Throw away and rewrite. Pfft.
     Dummy.cache.flush # Just to be uber sure
 
     query = {:title => 'Dummy'}
@@ -9,12 +10,16 @@ describe "Amfetamine REST Helpers with conditions" do
     dummy.instance_variable_set('@notsaved',false)
 
     result = nil
-    stub_conditional_all_response(query, dummy) do
+
+    Dummy.prevent_external_connections! do |rc|
+      rc.get { [dummy]}
       result = Dummy.all(:conditions => query)
     end
+
     result2 = Dummy.all(:conditions => query) # No errors raised means it got it from the cache
     result.should == result2
     result.should include(dummy)
+
     Dummy.prevent_external_connections! do |resource|
       resource.delete {}
       dummy.destroy
@@ -24,6 +29,7 @@ describe "Amfetamine REST Helpers with conditions" do
   end
 
   it "should work with nested resource #all" do
+    # TODO: Throw away and rewrite
     Dummy.cache.flush # Just to be uber sure
     Child.cache.flush
 
@@ -36,7 +42,8 @@ describe "Amfetamine REST Helpers with conditions" do
     child.instance_variable_set('@notsaved',false)
 
     result = nil
-    stub_conditional_nested_all_response(dummy, query, child) do
+    Child.prevent_external_connections! do |r|
+      r.get(path: "/dummies/#{dummy.id}/children") {[child]}
       result = dummy.children.all(:conditions => query)
     end
     result2 = dummy.children.all(:conditions => query) # No errors raised means it got it from the cache
@@ -44,7 +51,8 @@ describe "Amfetamine REST Helpers with conditions" do
     result.should include(child)
     
 
-    stub_delete_response(child) do
+    Child.prevent_external_connections! do |r|
+      r.delete {}
       child.destroy
     end
     
@@ -92,7 +100,8 @@ describe "Amfetamine REST Helpers with conditions" do
     child.instance_variable_set('@notsaved',false)
 
     result = nil
-    stub_conditional_nested_single_response(dummy,child, query) do
+    Child.prevent_external_connections! do |r|
+      r.get { child }
       result = dummy.children.find(dummy.id, :conditions =>  query)
     end
 
@@ -101,7 +110,8 @@ describe "Amfetamine REST Helpers with conditions" do
     result2 = dummy.children.find(dummy.id, :conditions => query)
     result2.should == result
 
-    stub_delete_response(child) do
+    Child.prevent_external_connections! do |r|
+      r.delete {}
       child.destroy
     end
 
