@@ -1,5 +1,6 @@
 require 'simplecov'
 require 'simplecov-rcov'
+require 'pry'
 
 if ENV['COVERAGE'] && (RUBY_ENGINE == "ruby")
   SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
@@ -15,7 +16,6 @@ require 'dummy/child'
 require 'dummy/dummy'
 
 require 'fakeweb'
-require 'helpers/fakeweb_responses'
 require 'json'
 
 #Fakeweb to stub server responses, still want to to integration tests on the rest client
