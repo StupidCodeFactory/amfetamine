@@ -2,7 +2,7 @@ module Amfetamine
   class Config
     class << self
 
-      attr_reader :memcached_instance, :rest_client, :base_uri, :resource_suffix, :logger
+      attr_reader :memcached_instance, :rest_client, :base_uri, :resource_suffix, :logger, :disable_caching
 
       def configure
         yield(self)
@@ -28,6 +28,10 @@ module Amfetamine
       def resource_suffix=(value)
         raise ConfigurationInvalid, "Invalid value for resource suffix, should be a string" if !value.is_a?(String)
         @resource_suffix ||= value
+      end
+
+      def disable_caching=(value)
+        @disable_caching = value
       end
     end
   end

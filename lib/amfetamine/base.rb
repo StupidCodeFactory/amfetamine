@@ -110,6 +110,10 @@ module Amfetamine
       end
     end
 
+    def self.disable_caching=(value)
+      @disable_caching = value
+    end
+
     # Base method for creating objects
     def initialize(args={})
       super
@@ -153,9 +157,14 @@ module Amfetamine
     end
 
     # Checks if object is cachable
-    # TODO implement
     def self.cacheable?
-      true
+      if @disable_caching == true
+        false
+      elsif Amfetamine::Config.disable_caching == true
+        false
+      else 
+        true
+      end
     end
 
     def cacheable?
