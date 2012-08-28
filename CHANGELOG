@@ -1,3 +1,7 @@
+0.2.12
+- Add abillity to deactivate caching, using disable_caching= on either the config or an object.
+- Starting builds against other ruby versions
+
 0.2.11
 - Rewrote specs to be idempotent when randomized
 - Fixed a lot of specs for travis in general
