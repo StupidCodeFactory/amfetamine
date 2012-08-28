@@ -35,5 +35,6 @@ RSpec.configure do |config|
   config.after(:each) { Dummy.restore_rest_client; Child.restore_rest_client }
   config.before(:each) { Dummy.save_rest_client; Child.save_rest_client }
   config.before(:each) { Dummy.resource_suffix = '' }
+  config.order = "random"
 end
 
