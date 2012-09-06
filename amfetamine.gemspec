@@ -23,13 +23,13 @@ Gem::Specification.new do |s|
   s.add_development_dependency "guard"
   s.add_development_dependency "guard-bundler"
   s.add_development_dependency "guard-rspec"
-  s.add_development_dependency "ruby_gntp"
+  s.add_development_dependency "rb-fsevent"
+  s.add_development_dependency "rb-inotify"
   s.add_development_dependency "httparty"
   s.add_development_dependency "fakeweb"
   s.add_development_dependency "simplecov"
   s.add_development_dependency "simplecov-rcov"
   s.add_development_dependency "pry"
-
 
   # Runtime dependencies
   s.add_runtime_dependency "dalli"
