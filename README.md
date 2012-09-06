@@ -86,8 +86,8 @@ Usage
 ### Relationships
 
 ```ruby
-has_many_resources PLURAL_OBJECT_NAME_SYMBOLS
-belongs_to_resource SINGULAR_OBJECT_NAME_SYMBOL
+has_many_resources :children  # plural object name (Symbol)
+belongs_to_resource :parent   # singular object name (Symbol)
 
 parent.children.all # => Returns all nested resources, you can enumarate it with each, include? and several other helpers are available
 parent.children.all(:conditions => SOMETHING) # Works as expected

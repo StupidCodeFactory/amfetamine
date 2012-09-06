@@ -32,24 +32,23 @@ module Amfetamine
     end
 
     module ClassMethods
-      def has_many_resources(*klasses)
+      def has_many_resources(name)
         self.class_eval do
-          @_relationship_children = []
-          klasses.each do |klass|
-            attr_reader klass
-            @_relationship_children << klass
+          attr_reader name
 
-            parent_id_field = self.name.to_s.downcase.singularize + "_id"
+          @_relationship_children ||= []
+          @_relationship_children << name
 
-            define_method("build_#{klass.to_s.singularize}") do |*args|
-              args = args.shift || {}
-              Amfetamine.parent.const_get(klass.to_s.gsub('/', '::').singularize.gsub('_','').capitalize).new(args.merge(parent_id_field => self.id))
-            end
+          parent_id_field = self.name.to_s.downcase.singularize + "_id"
 
-            define_method("create_#{klass.to_s.singularize}") do |*args|
-              args = args.shift || {}
-              Amfetamine.parent.const_get(klass.to_s.gsub('/', '::').singularize.gsub('_','').capitalize).create(args.merge(parent_id_field => self.id))
-            end
+          define_method("build_#{name.to_s.singularize}") do |*args|
+            args = args.shift || {}
+            Amfetamine.parent.const_get(name.to_s.gsub('/', '::').singularize.gsub('_','').capitalize).new(args.merge(parent_id_field => self.id))
+          end
+
+          define_method("create_#{name.to_s.singularize}") do |*args|
+            args = args.shift || {}
+            Amfetamine.parent.const_get(name.to_s.gsub('/', '::').singularize.gsub('_','').capitalize).create(args.merge(parent_id_field => self.id))
           end
         end
       end
@@ -58,14 +57,12 @@ module Amfetamine
         @_relationship_children
       end
 
-      def belongs_to_resource(*klasses)
+      def belongs_to_resource(name)
         self.class_eval do
-          @_relationship_parents = []
-          klasses.each do |klass|
-            attr_reader klass
+          attr_reader name
 
-            @_relationship_parents << klass
-          end
+          @_relationship_parents ||= []
+          @_relationship_parents << name
         end
       end
 
