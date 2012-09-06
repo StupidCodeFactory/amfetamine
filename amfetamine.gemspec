@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
   # Development dependencies
   s.add_development_dependency "rspec"
   s.add_development_dependency "guard"
+  s.add_development_dependency "guard-bundler"
   s.add_development_dependency "guard-rspec"
   s.add_development_dependency "ruby_gntp"
   s.add_development_dependency "httparty"
