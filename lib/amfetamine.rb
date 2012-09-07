@@ -12,8 +12,12 @@ require "amfetamine/base" # Basics
 require "amfetamine/config" # Configuration class
 
 module Amfetamine
-
   def self.logger
     Amfetamine::Logger.instance
+  end
+
+  # If included in Rails, disable caching in dev/test modes
+  if defined?(Rails) && (Rails.env.development? || Rails.env.test?)
+    Amfetamine::Config.disable_caching = true
   end
 end
