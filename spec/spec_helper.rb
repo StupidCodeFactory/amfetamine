@@ -27,11 +27,12 @@ require 'json'
 FakeWeb.allow_net_connect = false
 def build(object)
   {
-    :dummy   => lambda { Dummy.new({   :title => 'Dummy',  :description => 'Crash me!', :id => IdPool.next })},
+    :dummy   => lambda { Dummy.new({   :title => 'Dummy',  :description => 'Crash me!', :id => IdPool.next }) },
     :child   => lambda { Child.new({   :title => 'Child',  :description => 'Daddy!',    :id => IdPool.next }) },
-    :dummy2  => lambda { Dummy2.new({  :title => 'Dummy2', :description => 'Daddy!',    :id => IdPool.next })},
-    :teacher => lambda { Teacher.new({ :name => 'Teacher', :id => IdPool.next })},
-    :infant  => lambda { Infant.new({  :name => 'Infant',  :id => IdPool.next })}
+    :dummy2  => lambda { Dummy2.new({  :title => 'Dummy2', :description => 'Daddy!',    :id => IdPool.next }) },
+    :teacher => lambda { Teacher.new({ :name => 'Teacher', :id => IdPool.next }) },
+    :infant  => lambda { Infant.new({  :name => 'Infant',  :id => IdPool.next }) },
+    :student => lambda { Student.new({ :name => 'Student', :id => IdPool.next }) }
   }[object].call
 end
 

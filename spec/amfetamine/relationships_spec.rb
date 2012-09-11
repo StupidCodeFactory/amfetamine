@@ -148,6 +148,21 @@ describe Amfetamine::Relationships do
       specify { infant.parent.rest_path.should eql("/parents/#{ dummy.id }/infants") }
       specify { infant.parent.find_path(1).should eql("/parents/#{ dummy.id }/infants/1") }
     end
+
+  end
+
+  context "multiple has_many_resources relationships" do
+
+    let(:teacher) { build :teacher }
+    let!(:pupil) { teacher.build_pupil }
+    let!(:student) { teacher.build_student }
+
+    specify { pupil.should be_a(Child) }
+    specify { student.should be_a(Student) }
+    specify { teacher.pupils.rest_path.should eql("/teachers/#{ teacher.id }/pupils") }
+    specify { teacher.students.rest_path.should eql("/teachers/#{ teacher.id }/students") }
+
+
   end
 
 end
