@@ -10,12 +10,13 @@ end
 require File.expand_path("../../lib/amfetamine.rb", __FILE__)
 require 'helpers/active_model_lint'
 
-require 'dummy/dummy_rest_client'
-require 'dummy/configure'
-require 'dummy/child'
-require 'dummy/dummy'
-require 'dummy/teacher'
-require 'dummy/infant'
+# Dummies (factories)
+Dir[File.dirname(__FILE__) + '/dummy/*.rb'].each { |file| require file }
+
+Amfetamine::Config.configure do |config|
+  config.memcached_instance = 'localhost:11211'
+  config.rest_client = DummyRestClient
+end
 
 require 'fakeweb'
 require 'json'
