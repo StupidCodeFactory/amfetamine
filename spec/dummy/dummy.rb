@@ -1,6 +1,4 @@
 class Dummy < Amfetamine::Base
-  @@children = [] # unrelated to relationships!
-
   amfetamine_attributes :title, :description
   validates_presence_of :title, :description
 
@@ -13,17 +11,6 @@ class Dummy < Amfetamine::Base
   after_save :action_after_save
 
   before_validation :action_before_validate
-
-
-  # Needed for proper ID tracking
-  def initialize(args={})
-    @@children << self
-    super(args)
-  end
-
-  def self.children
-    @@children ||= []
-  end
 
   def action_before_create
     Amfetamine.logger.warn "Yo, BEFORE CREATE called"
@@ -41,5 +28,4 @@ class Dummy < Amfetamine::Base
 
   def action_before_validate
   end
-
 end

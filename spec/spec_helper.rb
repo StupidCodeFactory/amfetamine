@@ -8,7 +8,9 @@ if ENV['COVERAGE'] && (RUBY_ENGINE == "ruby")
 end
 
 require File.expand_path("../../lib/amfetamine.rb", __FILE__)
-require 'helpers/active_model_lint'
+
+# spec helpers
+Dir[File.dirname(__FILE__) + '/helpers/*.rb'].each { |file| require file }
 
 # Dummies (factories)
 Dir[File.dirname(__FILE__) + '/dummy/*.rb'].each { |file| require file }
@@ -25,11 +27,11 @@ require 'json'
 FakeWeb.allow_net_connect = false
 def build(object)
   {
-    :dummy => lambda { Dummy.new({:title => 'Dummy', :description => 'Crash me!', :id => Dummy.children.length + 1})},
-    :child => lambda { Child.new({:title => 'Child', :description => 'Daddy!', :id => Child.children.length + 1}) },
-    :dummy2 => lambda { Dummy2.new({:title => 'Dummy2', :description => 'Daddy!', :id => Dummy2.children.length + 1})},
-    :teacher => lambda { Teacher.new({:name => 'Teacher', :id => Teacher.children.length + 1})},
-    :infant => lambda { Infant.new({:name => 'Infant', :id => Infant.children.length + 1})}
+    :dummy   => lambda { Dummy.new({   :title => 'Dummy',  :description => 'Crash me!', :id => IdPool.next })},
+    :child   => lambda { Child.new({   :title => 'Child',  :description => 'Daddy!',    :id => IdPool.next }) },
+    :dummy2  => lambda { Dummy2.new({  :title => 'Dummy2', :description => 'Daddy!',    :id => IdPool.next })},
+    :teacher => lambda { Teacher.new({ :name => 'Teacher', :id => IdPool.next })},
+    :infant  => lambda { Infant.new({  :name => 'Infant',  :id => IdPool.next })}
   }[object].call
 end
 

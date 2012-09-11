@@ -2,14 +2,6 @@ require 'spec_helper'
 
 # Let's create a new class for our experiments
 class Dummy2 < Amfetamine::Base
-  def initialize(args={})
-    @@children << self
-    super(args)
-  end
-
-  def self.children
-    @@children ||= []
-  end
 end
 
 describe "Dynamic Attributes" do
@@ -25,4 +17,3 @@ describe "Dynamic Attributes" do
     end
   end
 end
-
