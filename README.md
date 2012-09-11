@@ -96,6 +96,29 @@ parent.children.find(ID) # => Returns the nested child with ID
 children.parent # => returns a Amfetamine::Relationship with only the parent
 ```
 
+You can also override class name and foreign key in a relationship declaration:
+
+```ruby
+class User < Amfetamine::Base
+  has_many_resources :owned_companies, class_name: 'Company', foreign_key: 'owner_id'
+  ...
+```
+
+which will result in the following query:
+
+```
+/users/:id/owned_companies.json
+```
+
+And the resulting json will be mapped to a local 'Company' class (which is
+also an Amfetamine based class).
+
+
+
+This also works similarly for a `belongs_to_resource` relationship.
+
+
+
 ### Querying
 
 ```ruby
