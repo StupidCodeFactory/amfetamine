@@ -5,8 +5,8 @@ require "amfetamine/version"
 Gem::Specification.new do |s|
   s.name        = "amfetamine"
   s.version     = Amfetamine::VERSION
-  s.authors     = ["Timon Vonk"]
-  s.email       = ["timon@exvo.com"]
+  s.authors     = ["Timon Vonk", "Paweł Gościcki"]
+  s.email       = ["timon@exvo.com", "pawel.goscicki@gmail.com"]
   s.homepage    = "http://www.github.com/exvo/amfetamine"
   s.summary     = %q{REST object abstraction on steroids the makes shit go boom!}
   s.description = %q{Provides an interface to REST apis with objects and a cache. Zero effort!}
