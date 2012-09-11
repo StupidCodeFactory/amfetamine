@@ -2,35 +2,36 @@ module Amfetamine
   class Relationship
     include Enumerable
 
-    attr_reader :on, :type, :from
+    attr_reader :on_resource_name, :on_class_name, :type, :from
 
     def initialize(opts)
-      @type = opts[:type]
-      @on = opts[:on] # Target class
-      @from = opts[:from] # receiving object
+      @type             = opts[:type]
+      @on_resource_name = opts[:on_resource_name]                          # Target resource name
+      @on_class_name    = opts.fetch(:on_class_name) { @on_resource_name } # Target class
+      @from             = opts[:from]                                      # receiving object
     end
 
     def << (other)
       other.send("#{from_singular_name}_id=", @from.id)
-      other.instance_variable_set("@#{from_singular_name}", Amfetamine::Relationship.new(:on => @from, :from => other, :type => :belongs_to))
+      other.instance_variable_set("@#{from_singular_name}", Amfetamine::Relationship.new(:on_resource_name => @from, :on_class_name => @from, :from => other, :type => :belongs_to))
       @children ||= [] # No need to do a request here, but it needs to be an array if it isn't yet.
       @children << other
     end
 
     def on_class
-      if @on.is_a?(Symbol)
-        Amfetamine.parent.const_get(@on.to_s.gsub('/', '::').singularize.gsub('_','').capitalize)
+      if @on_class_name.is_a?(Symbol) or @on_class_name.is_a?(String)
+        Amfetamine.parent.const_get(@on_class_name.to_s.singularize.split('/').map { |s| s.split('_').map(&:capitalize).join }.join('::'))
       else
-        @on.class
+        @on_class_name.class
       end
     end
 
     # Id of object this relationship references
     def parent_id
-      if @on.is_a?(Symbol)
-        @from.send(@on.to_s.downcase + "_id") if @type == :belongs_to
+      if @on_class_name.is_a?(Symbol) or @on_class_name.is_a?(String)
+        @from.send(@on_class_name.to_s.downcase.gsub('/', '_') + "_id") if @type == :belongs_to
       else
-        @on.id
+        @on_class_name.id
       end
     end
 
@@ -48,10 +49,10 @@ module Amfetamine
     end
 
     def on_plural_name
-      if @on.is_a?(Symbol)
-        @on.to_s.pluralize
+      if @on_resource_name.is_a?(Symbol) or @on_resource_name.is_a?(String)
+        @on_resource_name.to_s.pluralize
       else
-        @on.class.name.to_s.pluralize.downcase
+        @on_resource_name.class.name.to_s.pluralize.downcase
       end
     end
 
@@ -91,11 +92,9 @@ module Amfetamine
       on_class.find(id, {:nested_path => find_path(id)}.merge(opts))
     end
 
-
     def include?(other)
       self.all
       @children.include?(other)
     end
-
   end
 end

@@ -1,9 +1,10 @@
-class Child < Amfetamine::Base
+class Teacher < Amfetamine::Base
   @@children = [] # unrelated to relationships!
-  attr_accessor :title, :description, :dummy_id
 
-  belongs_to_resource :dummy
+  amfetamine_attributes :name
+  has_many_resources :pupils, class_name: 'Child', foreign_key: 'dummy_id'
 
+  # Needed for proper ID tracking
   def initialize(args={})
     @@children << self
     super(args)

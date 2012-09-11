@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Amfetamine::Relationships do
   let(:dummy) {build :dummy}
   let(:child) {build :child}
-  
+
   context "Routing" do
     it "should generate correct paths" do
       dummy.children << child
@@ -25,13 +25,12 @@ describe Amfetamine::Relationships do
 
     it "should raise error if nested path lacks parent id" do
       child = Child.new({:title => 'test', :dummy_id => nil})
-
       lambda { child.belongs_to_relationships.first.rest_path }.should raise_exception(Amfetamine::InvalidPath)
     end
   end
 
   context "Adding and modifying children" do
-    before(:each) do
+    before do
       dummy.children << child
       child.instance_variable_set(:@notsaved, false)
 
@@ -62,7 +61,7 @@ describe Amfetamine::Relationships do
         r.get { dummy }
         new_dummy = Dummy.find(dummy.id)
       end
-        
+
       children = nil
       Dummy.prevent_external_connections! do |r|
         r.get { [child] }
@@ -74,16 +73,13 @@ describe Amfetamine::Relationships do
     it "should be possible to get a single child if not in memory" do
       new_dummy = Dummy.find(dummy.id)
       new_child = new_dummy.children.find(child.id)
-
       new_child.should == child
     end
-
 
     it "should build new child if asked" do
       new_child = dummy.build_child
       new_child.should be_new
       new_child.should be_a(Child)
-      dummy.children
     end
 
     it "should create a new child if asked" do
@@ -101,6 +97,57 @@ describe Amfetamine::Relationships do
       end
     end
   end
+
+  context "has_many_resources relationship using `class_name` option" do
+
+    let(:teacher) { build :teacher }
+
+    specify { teacher.pupils.should be_a(Amfetamine::Relationship) }
+
+    context "generates correct paths for fetching pupils" do
+      specify { teacher.pupils.full_path.should eql("teachers/#{ teacher.id }/pupils") }
+      specify { teacher.pupils.rest_path.should eql("/teachers/#{ teacher.id }/pupils") }
+      specify { teacher.pupils.find_path(1).should eql("/teachers/#{ teacher.id }/pupils/1") }
+    end
+
+    it "builds new pupils" do
+      new_pupil = teacher.build_pupil
+      new_pupil.should be_new
+      new_pupil.should be_a(Child)
+    end
+
+    it "creates new pupils" do
+      attrs = { id: 1, title: 'Pupil' }
+      pupil = teacher.build_pupil(attrs)
+
+      Child.prevent_external_connections! do |allow|
+        allow.post(:code => 201) { pupil }
+        allow.get { [pupil] }
+
+        new_pupil = teacher.create_pupil(attrs)
+        new_pupil.should_not be_new
+        new_pupil.should be_cached
+        new_pupil.should be_a(Child)
+      end
+    end
+
+  end
+
+  context "belongs_to_resource relationship using `class_name` option" do
+
+    let(:infant) { build :infant }
+
+    specify { infant.parent.should be_a(Amfetamine::Relationship) }
+
+    context "generates correct paths for fetching parent" do
+      before do
+        dummy.children << infant
+      end
+
+      specify { infant.parent.full_path.should eql("parents/#{ dummy.id }/infants") }
+      specify { infant.parent.rest_path.should eql("/parents/#{ dummy.id }/infants") }
+      specify { infant.parent.find_path(1).should eql("/parents/#{ dummy.id }/infants/1") }
+    end
+  end
+
 end
-
-

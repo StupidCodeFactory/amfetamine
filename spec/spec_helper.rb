@@ -14,18 +14,21 @@ require 'dummy/dummy_rest_client'
 require 'dummy/configure'
 require 'dummy/child'
 require 'dummy/dummy'
+require 'dummy/teacher'
+require 'dummy/infant'
 
 require 'fakeweb'
 require 'json'
 
-#Fakeweb to stub server responses, still want to to integration tests on the rest client
+# Fakeweb to stub server responses, still want to do integration tests on the rest client
 FakeWeb.allow_net_connect = false
 def build(object)
   {
     :dummy => lambda { Dummy.new({:title => 'Dummy', :description => 'Crash me!', :id => Dummy.children.length + 1})},
     :child => lambda { Child.new({:title => 'Child', :description => 'Daddy!', :id => Child.children.length + 1}) },
-    :dummy2 => lambda { Dummy2.new({:title => 'Dummy2', :description => 'Daddy!', :id => Dummy2.children.length + 1}) }
-
+    :dummy2 => lambda { Dummy2.new({:title => 'Dummy2', :description => 'Daddy!', :id => Dummy2.children.length + 1})},
+    :teacher => lambda { Teacher.new({:name => 'Teacher', :id => Teacher.children.length + 1})},
+    :infant => lambda { Infant.new({:name => 'Infant', :id => Infant.children.length + 1})}
   }[object].call
 end
 
@@ -37,4 +40,3 @@ RSpec.configure do |config|
   config.before(:each) { Dummy.resource_suffix = '' }
   config.order = "random"
 end
-
