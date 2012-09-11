@@ -1,3 +1,7 @@
+0.3.0
+- Caching is now turned off by default in Rails development/test modes
+- Add `class_name` and `foreign_key` options to relationships, which allows mapping resources to local Amfetamine classes with different names
+
 0.2.12
 - Add abillity to deactivate caching, using disable_caching= on either the config or an object.
 - Starting builds against other ruby versions
@@ -7,7 +11,7 @@
 - Fixed a lot of specs for travis in general
 
 0.2.10
-- Removed verbosity from tests 
+- Removed verbosity from tests
 - Dropped support for Ruby 1.8.7
 - Sourcecode is now available on github
 
