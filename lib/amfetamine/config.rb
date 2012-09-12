@@ -10,7 +10,6 @@ module Amfetamine
       end
 
       def memcached_instance=(servers, options={})
-        raise ConfigurationInvalid, 'Invalid value for memcached_instance' if !servers.is_a?(String)
         @memcached_instance ||= Dalli::Client.new(servers, options)
       end
 
