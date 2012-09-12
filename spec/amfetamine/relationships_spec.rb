@@ -1,8 +1,12 @@
 require 'spec_helper'
 
 describe Amfetamine::Relationships do
-  let(:dummy) {build :dummy}
-  let(:child) {build :child}
+
+  let(:child)   { build :child }
+  let(:dummy)   { build :dummy }
+  let(:infant)  { build :infant }
+  let(:student) { build :student }
+  let(:teacher) { build :teacher }
 
   context "Routing" do
     it "should generate correct paths" do
@@ -100,8 +104,6 @@ describe Amfetamine::Relationships do
 
   context "has_many_resources relationship using `class_name` option" do
 
-    let(:teacher) { build :teacher }
-
     specify { teacher.pupils.should be_a(Amfetamine::Relationship) }
 
     context "generates correct paths for fetching pupils" do
@@ -135,8 +137,6 @@ describe Amfetamine::Relationships do
 
   context "belongs_to_resource relationship using `class_name` option" do
 
-    let(:infant) { build :infant }
-
     specify { infant.parent.should be_a(Amfetamine::Relationship) }
 
     context "generates correct paths for fetching parent" do
@@ -153,15 +153,28 @@ describe Amfetamine::Relationships do
 
   context "multiple has_many_resources relationships" do
 
-    let(:teacher) { build :teacher }
-    let!(:pupil) { teacher.build_pupil }
-    let!(:student) { teacher.build_student }
+    let(:pupil) { teacher.build_pupil }
 
     specify { pupil.should be_a(Child) }
     specify { student.should be_a(Student) }
+
     specify { teacher.pupils.rest_path.should eql("/teachers/#{ teacher.id }/pupils") }
     specify { teacher.students.rest_path.should eql("/teachers/#{ teacher.id }/students") }
 
+  end
+
+  context "multiple belongs_to_resource relationships" do
+
+    before do
+      teacher.students << student
+      dummy.students << student
+    end
+
+    specify { teacher.students.should be_a(Amfetamine::Relationship) }
+    specify { dummy.students.should be_a(Amfetamine::Relationship) }
+
+    specify { teacher.students.rest_path.should eql("/teachers/#{ teacher.id }/students") }
+    specify { dummy.students.rest_path.should eql("/dummies/#{ dummy.id }/students") }
 
   end
 

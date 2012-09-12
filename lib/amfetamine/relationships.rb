@@ -10,7 +10,8 @@ module Amfetamine
         self.class._relationship_children.each do |rel|
           resource_name = rel[:resource_name]
           class_name    = rel[:class_name]
-          instance_variable_set("@#{resource_name}", Amfetamine::Relationship.new(:on_resource_name => resource_name, :on_class_name => class_name, :from => self, :type => :has_many))
+          foreign_key   = rel[:foreign_key]
+          instance_variable_set("@#{resource_name}", Amfetamine::Relationship.new(on_resource_name: resource_name, on_class_name: class_name, foreign_key: foreign_key, from: self, type: :has_many))
         end
       end
 
@@ -18,7 +19,8 @@ module Amfetamine
         self.class._relationship_parents.each do |rel|
           resource_name = rel[:resource_name]
           class_name    = rel[:class_name]
-          instance_variable_set("@#{resource_name}", Amfetamine::Relationship.new(:on_resource_name => resource_name, :on_class_name => class_name, :from => self, :type => :belongs_to))
+          foreign_key   = rel[:foreign_key]
+          instance_variable_set("@#{resource_name}", Amfetamine::Relationship.new(on_resource_name: resource_name, on_class_name: class_name, foreign_key: foreign_key, from: self, type: :belongs_to))
         end
       end
     end
@@ -39,14 +41,14 @@ module Amfetamine
       # has_many_resources :pupils, class_name: 'Child', foreign_key: 'dummy_id'
       def has_many_resources(resource_name, opts = {})
         self.class_eval do
-          class_name = opts.delete(:class_name) { resource_name }
+          class_name  = opts.delete(:class_name)  { resource_name }
           foreign_key = opts.delete(:foreign_key) { self.name.to_s.downcase.gsub('/', '_').singularize + "_id" }
 
           attr_reader resource_name
           attr_reader class_name
 
           @_relationship_children ||= []
-          @_relationship_children << { resource_name: resource_name, class_name: class_name }
+          @_relationship_children << { resource_name: resource_name, class_name: class_name, foreign_key: foreign_key }
 
           define_method("build_#{resource_name.to_s.downcase.gsub('/', '_').singularize}") do |*args|
             args = args.shift || {}
@@ -67,13 +69,14 @@ module Amfetamine
 
       def belongs_to_resource(resource_name, opts = {})
         self.class_eval do
-          class_name = opts.delete(:class_name) { resource_name }
+          class_name  = opts.delete(:class_name)  { resource_name }
+          foreign_key = opts.delete(:foreign_key) { resource_name.to_s.downcase.gsub('/', '_') + "_id" }
 
           attr_reader resource_name
           attr_reader class_name
 
           @_relationship_parents ||= []
-          @_relationship_parents << { resource_name: resource_name, class_name: class_name }
+          @_relationship_parents << { resource_name: resource_name, class_name: class_name, foreign_key: foreign_key }
         end
       end
 

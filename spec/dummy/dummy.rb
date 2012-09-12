@@ -3,6 +3,7 @@ class Dummy < Amfetamine::Base
   validates_presence_of :title, :description
 
   has_many_resources :children
+  has_many_resources :students, foreign_key: 'parent_id'
 
   before_create :action_before_create
   after_create :action_after_create

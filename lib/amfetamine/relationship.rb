@@ -7,13 +7,14 @@ module Amfetamine
     def initialize(opts)
       @type             = opts[:type]
       @on_resource_name = opts[:on_resource_name]                          # Target resource name
-      @on_class_name    = opts.fetch(:on_class_name) { @on_resource_name } # Target class
-      @from             = opts[:from]                                      # receiving object
+      @on_class_name    = opts.fetch(:on_class_name) { @on_resource_name } # Target class name
+      @from             = opts[:from]                                      # Receiving object
+      @foreign_key      = opts.fetch(:foreign_key) { build_foreign_key }   # Foreign key
     end
 
     def << (other)
-      other.send("#{from_singular_name}_id=", @from.id)
-      other.instance_variable_set("@#{from_singular_name}", Amfetamine::Relationship.new(:on_resource_name => @from, :on_class_name => @from, :from => other, :type => :belongs_to))
+      other.send("#{@foreign_key}=", @from.id)
+      other.instance_variable_set("@#{from_singular_name}", Amfetamine::Relationship.new(on_resource_name: @from, on_class_name: @from, foreign_key: @foreign_key, from: other, type: :belongs_to))
       @children ||= [] # No need to do a request here, but it needs to be an array if it isn't yet.
       @children << other
     end
@@ -29,7 +30,7 @@ module Amfetamine
     # Id of object this relationship references
     def parent_id
       if @on_class_name.is_a?(Symbol) or @on_class_name.is_a?(String)
-        @from.send(@on_class_name.to_s.downcase.gsub('/', '_') + "_id") if @type == :belongs_to
+        @from.send(@foreign_key) if @type == :belongs_to
       else
         @on_class_name.id
       end
@@ -95,6 +96,16 @@ module Amfetamine
     def include?(other)
       self.all
       @children.include?(other)
+    end
+
+    private
+
+    def build_foreign_key
+      if @type == :has_many
+        "#{from_singular_name}_id"
+      elsif @type == :belongs_to
+        @on_class_name.to_s.downcase.gsub('/', '_') + "_id"
+      end
     end
   end
 end
