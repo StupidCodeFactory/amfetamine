@@ -1,3 +1,6 @@
+0.3.1
+- memcached_instance Dalli::Client configuration setting changes (it should now start with "memcached://")
+
 0.3.0
 - Caching is now turned off by default in Rails development/test modes
 - Add `class_name` and `foreign_key` options to relationships, which allows mapping resources to local Amfetamine classes with different names
