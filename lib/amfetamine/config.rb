@@ -9,9 +9,8 @@ module Amfetamine
         @base_uri ||= ""
       end
 
-      def memcached_instance=(value, options={})
-        raise ConfigurationInvalid, 'Invalid value for memcached_instance' if !value.is_a?(String)
-        @memcached_instance ||= Dalli::Client.new(value, options)
+      def memcached_instance=(servers, options={})
+        @memcached_instance ||= Dalli::Client.new(servers, options)
       end
 
       def rest_client=(value)

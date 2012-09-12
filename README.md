@@ -47,14 +47,21 @@ Create an initializer, note that you can also do this on a per object basis:
 ```ruby
 #config/initializers/amfetamine_config.rb
 Amfetamine::Config.configure do |config|
-  config.memcached_instance = [HOST:PORT, OPTION1,OPTION2] || HOST:PORT
+  config.memcached_instance = "memcached://user:pass@host:port:weight", options_hash  # See [Dalli::Client](https://github.com/mperham/dalli/blob/master/lib/dalli/client.rb)
   config.rest_client = REST_CLIENT
 
   # Optional
   config.resource_suffix = '.json' # The suffix to the path
-  config.base_uri = 'http://bla.bla/bla/' # If you either need a path or domain infront of your URI, you can do it here. Its advised to use httparty for this.
+  config.base_uri = 'http://bla.bla/bla/' # If you either need a path or domain infront of your URI, you can do it here. It's advised to use httparty for this.
 end
 ```
+
+On Heroku your `memcached_instance` variable can look like this (with the memcached addon enabled):
+
+```ruby
+config.memcached_instance = "memcached://#{ENV['MEMCACHE_USERNAME']}:#{ENV['MEMCACHE_PASSWORD']}@#{ENV['MEMCACHE_SERVERS']}:11211"
+```
+
 
 ### 3)
 Configure your object:
@@ -63,7 +70,7 @@ Configure your object:
 class Banana < Amfetamine::Base
   # Right now methods are set dynamically, the older syntax is deprecated. Will move to an or/or situation.
   # OPTIONAL: Per object configuration
-  amfetamine_configure memcached_instance: 'localhost:11211',
+  amfetamine_configure memcached_instance: 'memcached://localhost:11211',
                  rest_client: BananaRestclient
 
 end
