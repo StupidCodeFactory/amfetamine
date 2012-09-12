@@ -7,9 +7,8 @@ module Amfetamine
       base.send(:include,ClassAndInstanceMethods)
     end
 
-
-    def initialize(server, options={})
-      @cache_server ||= Dalli::Client.new(server, options)
+    def initialize(servers, options={})
+      @cache_server ||= Dalli::Client.new(servers, options)
     end
 
     def cache_server
@@ -54,13 +53,10 @@ module Amfetamine
 
     module CacheServer
       private
+
       def cache_server
         Amfetamine::Config.memcached_instance
       end
-
-  
-
     end
   end
 end
-
