@@ -19,7 +19,7 @@ module Amfetamine
           key = opts[:nested_path] || self.find_path(id)
           data = get_data(key, opts[:conditions])
           if data[:status] == :success
-            val = build_object(data[:body]) 
+            val = build_object(data[:body])
           else
             nil
           end
@@ -99,17 +99,17 @@ module Amfetamine
       end
 
       run_callbacks(:save) do
-        response = if self.new?
-                     path = self.belongs_to_relationship? ? belongs_to_relationships.first.rest_path : rest_path
-                     self.class.handle_request(:post, path, {:body => {class_name.to_sym => self.to_hash}})
-                   else
-                     # Needs cleaning up, also needs to work with multiple belongs_to relationships (optional, I guess)
-                     path = self.belongs_to_relationship? ? belongs_to_relationships.first.singular_path : singular_path
-                     self.class.handle_request(:put, path, {:body => {class_name.to_sym => self.to_hash}})
-                   end
+        response =
+          if self.new?
+            path = self.belongs_to_relationship? ? belongs_to_relationships.first.rest_path : rest_path
+            self.class.handle_request(:post, path, {:body => {class_name.to_sym => self.to_hash}})
+          else
+            # Needs cleaning up, also needs to work with multiple belongs_to relationships (optional, I guess)
+            path = self.belongs_to_relationship? ? belongs_to_relationships.first.singular_path : singular_path
+            self.class.handle_request(:put, path, {:body => {class_name.to_sym => self.to_hash}})
+          end
 
         if handle_response(response)
-
           begin
             update_attributes_from_response(response[:body])
           ensure
@@ -119,7 +119,11 @@ module Amfetamine
           path = self.belongs_to_relationship? ? belongs_to_relationships.first.singular_path : singular_path
           self.cache_key = path
 
-          cache.set(path, self.to_cacheable) if self.cacheable?
+          if self.cacheable?
+            cache.set(path, self.to_cacheable)
+          else
+            true # return true for successful updates
+          end
         else
           false
         end
@@ -153,7 +157,6 @@ module Amfetamine
             cache.delete(r.rest_path + cc)
           end
         end
-        
         condition_keys = cache.get("#{rest_path}_conditions") || []
         condition_keys.each do |cc|
           cache.delete(rest_path + cc)
@@ -161,9 +164,6 @@ module Amfetamine
         Amfetamine.logger.info "Cleaned cache for #{self.class_name} with ID #{self.id}"
       end
     end
-
-
-
 
     def update_attributes(attrs)
       return true if attrs.all? { |k,v| self.send(k) == v } # Don't update if no attributes change
