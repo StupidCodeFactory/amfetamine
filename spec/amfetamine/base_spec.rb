@@ -43,7 +43,7 @@ describe Amfetamine::Base do
           response.should be_cached
         end
       end
-      
+
       it "should return nil if object not found" do
         lambda {
         Dummy.prevent_external_connections! do |r|
@@ -69,7 +69,7 @@ describe Amfetamine::Base do
         dummies.should include(dummy2)
         dummies.length.should eq(2)
       end
-      
+
       it "should return empty array if objects are not present" do
         Dummy.prevent_external_connections! do |r|
           r.get(:code => 200) {[]}
@@ -104,20 +104,27 @@ describe Amfetamine::Base do
     end
 
     context "#update" do
-      before(:each) do
+      before do
         dummy.send(:notsaved=, false)
       end
 
       it "should update if response is succesful" do
         Dummy.prevent_external_connections! do |r|
           r.put {}
-
           dummy.update_attributes({:title => 'zomg'})
         end
-
         dummy.should_not be_new
         dummy.title.should eq('zomg')
-        dummy.should be_cached 
+        dummy.should be_cached
+      end
+
+      it "should return true for successful updates even with disabled caching" do
+        Dummy.disable_caching = true
+        Dummy.prevent_external_connections! do |r|
+          r.put {}
+          dummy.update_attributes({ :title => 'zomg' }).should be_true
+        end
+        Dummy.disable_caching = false
       end
 
       it "should show errors if response is not succesful" do
@@ -222,5 +229,5 @@ describe Amfetamine::Base do
     end
 
   end
-      
+
 end
