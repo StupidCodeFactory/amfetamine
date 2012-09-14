@@ -1,3 +1,6 @@
+0.3.3
+- fix for double Array error messages bug for remote (server) validations [Issue #6]
+
 0.3.2
 - fix for Object#save return value with disabled caching
 
