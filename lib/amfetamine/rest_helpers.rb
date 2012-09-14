@@ -28,8 +28,10 @@ module Amfetamine
         true
       when :errors
         Amfetamine.logger.warn "Errors from response\n #{response[:body]}"
-        response[:body].each do |attr, mesg|
-          errors.add(attr.to_sym, mesg )
+        response[:body].each do |attr, error_messages|
+          error_messages.each do |msg|
+            errors.add(attr.to_sym, msg)
+          end
         end
         false
       when :server_error

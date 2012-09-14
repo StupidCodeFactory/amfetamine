@@ -14,7 +14,7 @@ describe Amfetamine::Base do
 
   end
 
-  describe "Class dummy, setup with amfetamine::base" do
+  describe "Class dummy, setup with Amfetamine::Base" do
     let(:dummy) { build(:dummy) }
     let(:dummy2) { build(:dummy) }
     subject { Dummy}
@@ -83,7 +83,6 @@ describe Amfetamine::Base do
       it "should create an object if data is correct" do
         Dummy.prevent_external_connections! do |r|
           r.post(:code => 201) {}
-
           new_dummy = Dummy.create({:title => 'test', :description => 'blabla'})
           new_dummy.should be_a(Dummy)
           new_dummy.should_not be_new
@@ -91,15 +90,22 @@ describe Amfetamine::Base do
         end
       end
 
-      it "should return errors if data is incorrect" do
+      it "sets errors hash if local validations fail" do
+        new_dummy = Dummy.create({ title: 'test' })
+        new_dummy.should be_new
+        new_dummy.errors.messages.should eql({ description: ["can't be blank"] })
+        new_dummy.should_not be_cached
+      end
+
+      it "sets errors hash if remote validations fail" do
+        error_message = "has already been taken"
         Dummy.prevent_external_connections! do |r|
-          r.post(:code => 422) {{:description => ['can\'t be blank']}}
-          new_dummy = Dummy.create({:title => 'test'})
+          r.post(code: 422) { { title: [error_message] } }
+          new_dummy = Dummy.create({ title: 'test', description: 'test' })
           new_dummy.should be_new
-          new_dummy.errors.messages.should eq({:description => ['can\'t be blank']})
+          new_dummy.errors.messages.should eql({ title: [error_message] })
           new_dummy.should_not be_cached
         end
-
       end
     end
 
@@ -127,15 +133,18 @@ describe Amfetamine::Base do
         Dummy.disable_caching = false
       end
 
-      it "should show errors if response is not succesful" do
+      it "sets errors hash if local validations fail" do
+        dummy.update_attributes({ title: "" })
+        dummy.errors.messages.should eql({ title: ["can't be blank"] })
+      end
+
+      it "sets errors hash if remote validations fail" do
+        error_message = "has already been taken"
         Dummy.prevent_external_connections! do |r|
-          r.put(:code => 422) { [:title => ['can\'t be blank']]}
-
-          dummy.update_attributes({:title => ''})
+          r.put(code: 422) { { title: [error_message] } }
+          dummy.update_attributes({ title: "abc" })
+          dummy.errors.messages.should eql({ title: [error_message] })
         end
-
-        dummy.should_not be_new
-        dummy.errors.messages.should eq({:title => ['can\'t be blank']})
       end
 
       it "should not do a request if the data doesn't change" do
