@@ -1,5 +1,6 @@
-Amfetamine, A REST object abstractavaganza
-====================================
+# Amfetamine
+
+A REST object abstractavaganza
 
 > Rest abstraction on steroids that makes shit go boom!
 
@@ -34,15 +35,13 @@ It is still in beta and under heavy development. Some features:
 Setup
 =====
 
-### 1)
-Add it to your gemfile:
+### 1) Add it to your gemfile:
 
 ```ruby
 gem 'amfetamine'
 ```
 
-### 2)
-Create an initializer, note that you can also do this on a per object basis:
+### 2) Create an initializer, note that you can also do this on a per object basis:
 
 ```ruby
 #config/initializers/amfetamine_config.rb
@@ -63,8 +62,7 @@ config.memcached_instance = "memcached://#{ENV['MEMCACHE_USERNAME']}:#{ENV['MEMC
 ```
 
 
-### 3)
-Configure your object:
+### 3) Configure your object:
 
 ```ruby
 class Banana < Amfetamine::Base
@@ -77,8 +75,7 @@ end
 ```
 
 
-### 4)
-Lastly, because I think its more semantic, you need to configure both your service and client to include the root element in JSON. However, Amfetamine will work fine without this.
+### 4) Lastly, because I think its more semantic, you need to configure both your service and client to include the root element in JSON. However, Amfetamine will work fine without this.
 
 ```ruby
 # config/initializers/wrap_parameters.rb
@@ -222,13 +219,14 @@ Licence
 =======
 
 
-Copyright (C) 2012 Exvo.com, Timon Vonk
+Copyright (C) 2012-2013 Exvo.com, Timon Vonk
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 Contributing
 ============
