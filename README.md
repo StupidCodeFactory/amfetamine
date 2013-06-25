@@ -55,10 +55,10 @@ Amfetamine::Config.configure do |config|
 end
 ```
 
-On Heroku your `memcached_instance` variable can look like this (with the memcached addon enabled):
+On Heroku your `memcached_instance` variable can look like this (with the [memcachier](https://addons.heroku.com/memcachier) addon enabled):
 
 ```ruby
-config.memcached_instance = "memcached://#{ENV['MEMCACHE_USERNAME']}:#{ENV['MEMCACHE_PASSWORD']}@#{ENV['MEMCACHE_SERVERS']}:11211"
+config.memcached_instance = "memcached://#{ENV['MEMCACHIER_USERNAME']}:#{ENV['MEMCACHIER_PASSWORD']}@#{ENV['MEMCACHIER_SERVERS']}"
 ```
 
 
@@ -217,7 +217,6 @@ Future Features & TODO
 
 Licence
 =======
-
 
 Copyright (C) 2012-2013 Exvo.com, Timon Vonk
 
