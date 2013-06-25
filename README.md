@@ -240,5 +240,6 @@ Contributing
 Contributors
 ============
 
-* Timon Vonk
-* Matt Bridges
+* [Timon Vonk](https://github.com/timonv)
+* [Matt Bridges](https://github.com/mattdbridges)
+* [Paweł Gościcki](https://github.com/pjg)
