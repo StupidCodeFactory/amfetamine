@@ -1,3 +1,7 @@
+## 0.4.1
+
+* Fixed bundling in Rails applications
+
 ## 0.4.0
 
 * Add default cache settings (10 minutes)
