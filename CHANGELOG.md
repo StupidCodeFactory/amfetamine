@@ -1,3 +1,7 @@
+## 0.4.0
+
+* Add default cache settings (10 minutes)
+
 ## 0.3.3
 
 * fix for double Array error messages bug for remote (server) validations [Issue #6]
