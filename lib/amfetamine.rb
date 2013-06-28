@@ -16,8 +16,8 @@ module Amfetamine
     Amfetamine::Logger.instance
   end
 
-  # If included in Rails, disable caching in dev/test modes
-  if defined?(Rails) && (Rails.env.development? || Rails.env.test?)
+  # Disable chaching in test mode (if included in Rails)
+  if defined?(Rails) && Rails.env.test?
     Amfetamine::Config.disable_caching = true
   end
 end
