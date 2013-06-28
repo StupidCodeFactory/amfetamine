@@ -169,7 +169,7 @@ describe Amfetamine::Base do
     end
 
     context "#save" do
-      let(:post_dummy) { build(:dummy) }
+      let!(:post_dummy) { dummy.dup }
 
       before do
         dummy.send(:notsaved=, true)
