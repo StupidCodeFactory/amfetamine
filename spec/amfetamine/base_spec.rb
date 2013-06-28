@@ -24,8 +24,8 @@ describe Amfetamine::Base do
     it { should be_valid }
     its(:title) { should ==('Dummy')}
     its(:description) { should ==('Crash me!')}
-    its(:to_json) { should match(/dummy/) }
-
+    its(:to_json) { should match(/Dummy/) }
+    its(:to_json) { should match(/Crash me\!/) }
   end
 
   describe "Class dummy, setup with Amfetamine::Base" do
