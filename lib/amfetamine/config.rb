@@ -38,8 +38,21 @@ module Amfetamine
 
       def default_memcached_options
         {
-          expires_in: default_expiration_time
+          expires_in: expiration_time
         }
+      end
+
+      def expiration_time
+        if defined?(Rails)
+          method = "expiration_time_for_#{ Rails.env }"
+          return send(method) if defined?(method)
+        end
+
+        default_expiration_time
+      end
+
+      def expiration_time_for_development
+        60.seconds
       end
 
       def default_expiration_time
