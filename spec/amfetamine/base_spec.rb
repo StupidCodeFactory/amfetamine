@@ -2,6 +2,20 @@ require 'spec_helper'
 
 # Integration tests :)
 describe Amfetamine::Base do
+
+  describe 'initialization' do
+    let(:memcached_instance) { Amfetamine::Config.memcached_instance }
+    let(:options) { memcached_instance.instance_variable_get(:@options) }
+
+    it 'passes :expires_in option to Dalli::Client' do
+      options.should include(:expires_in)
+    end
+
+    specify 'exires_in option is set to an integer value' do
+      options[:expires_in].should be_an_integer
+    end
+  end
+
   describe "Dummy, our ever faitful test subject" do
     # Some hight level tests, due to the complexity this makes it a lot easier to refactor
     let(:dummy) { build(:dummy) }
