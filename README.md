@@ -140,6 +140,21 @@ object.update_attributes(HASH)
 Object.create(HASH)
 ```
 
+
+Caching
+=======
+
+By default, all requests are cached. Default expiration time is set to 10 minutes. If you want to change it, you can do so when initializing the memcached client (see #2 above in setting up), like this:
+
+```ruby
+Amfetamine::Config.configure do |config|
+  config.memcached_instance = "memcached://user:pass@host:port:weight", { expires_in: 60.minutes }
+end
+```
+
+When Amfetamine is required in a Rails application it disables caching altogether in `test` environment and sets the `expires_in` to 60 seconds in `development` environment.
+
+
 Cache Invalidation
 =================
 
