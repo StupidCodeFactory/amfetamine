@@ -155,22 +155,23 @@ describe Amfetamine::Base do
     end
 
     context "#save" do
-      let(:dummy2) { dummy.dup}
-      before(:each) do
+      let(:post_dummy) { build(:dummy) }
+
+      before do
         dummy.send(:notsaved=, true)
-        dummy2 = dummy.dup
         dummy.send(:id=, nil)
       end
 
       it "should update the id if data is received from post" do
-        old_id = dummy.id
-        Dummy.prevent_external_connections! do |r|
-          r.post(code:201) { dummy2 }
+        dummy.id.should be_nil
 
+        Dummy.prevent_external_connections! do |r|
+          r.post(code:201) { post_dummy }
           dummy.save
         end
-        dummy.id.should == old_id
-        dummy.attributes[:id].should == old_id
+
+        dummy.id.should == post_dummy.id
+        dummy.attributes[:id].should == post_dummy.id
       end
 
       it "should update attributes if data is received from update" do
