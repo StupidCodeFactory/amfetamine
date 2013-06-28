@@ -45,7 +45,7 @@ module Amfetamine
       def expiration_time
         if defined?(Rails)
           method = "expiration_time_for_#{ Rails.env }"
-          return send(method) if defined?(method)
+          return send(method) if respond_to?(method)
         end
 
         default_expiration_time
