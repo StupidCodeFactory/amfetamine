@@ -2,6 +2,20 @@ require 'spec_helper'
 
 # Integration tests :)
 describe Amfetamine::Base do
+
+  describe 'initialization' do
+    let(:memcached_instance) { Amfetamine::Config.memcached_instance }
+    let(:options) { memcached_instance.instance_variable_get(:@options) }
+
+    it 'passes :expires_in option to Dalli::Client' do
+      options.should include(:expires_in)
+    end
+
+    specify 'exires_in option is set to an integer value' do
+      options[:expires_in].should be_an_integer
+    end
+  end
+
   describe "Dummy, our ever faitful test subject" do
     # Some hight level tests, due to the complexity this makes it a lot easier to refactor
     let(:dummy) { build(:dummy) }
@@ -10,8 +24,8 @@ describe Amfetamine::Base do
     it { should be_valid }
     its(:title) { should ==('Dummy')}
     its(:description) { should ==('Crash me!')}
-    its(:to_json) { should match(/dummy/) }
-
+    its(:to_json) { should match(/Dummy/) }
+    its(:to_json) { should match(/Crash me\!/) }
   end
 
   describe "Class dummy, setup with Amfetamine::Base" do
@@ -155,22 +169,23 @@ describe Amfetamine::Base do
     end
 
     context "#save" do
-      let(:dummy2) { dummy.dup}
-      before(:each) do
+      let!(:post_dummy) { dummy.dup }
+
+      before do
         dummy.send(:notsaved=, true)
-        dummy2 = dummy.dup
         dummy.send(:id=, nil)
       end
 
       it "should update the id if data is received from post" do
-        old_id = dummy.id
-        Dummy.prevent_external_connections! do |r|
-          r.post(code:201) { dummy2 }
+        dummy.id.should be_nil
 
+        Dummy.prevent_external_connections! do |r|
+          r.post(code:201) { post_dummy }
           dummy.save
         end
-        dummy.id.should == old_id
-        dummy.attributes[:id].should == old_id
+
+        dummy.id.should == post_dummy.id
+        dummy.attributes[:id].should == post_dummy.id
       end
 
       it "should update attributes if data is received from update" do

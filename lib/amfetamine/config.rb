@@ -10,7 +10,8 @@ module Amfetamine
       end
 
       def memcached_instance=(servers, options={})
-        @memcached_instance ||= Dalli::Client.new(servers, options)
+        opts = default_memcached_options.merge(options)
+        @memcached_instance ||= Dalli::Client.new(servers, opts)
       end
 
       def rest_client=(value)
@@ -32,6 +33,32 @@ module Amfetamine
       def disable_caching=(value)
         @disable_caching = value
       end
+
+      private
+
+      def default_memcached_options
+        {
+          expires_in: expiration_time
+        }
+      end
+
+      def expiration_time
+        if defined?(Rails)
+          method = "expiration_time_for_#{ Rails.env }"
+          return send(method) if defined?(method)
+        end
+
+        default_expiration_time
+      end
+
+      def expiration_time_for_development
+        60.seconds
+      end
+
+      def default_expiration_time
+        10.minutes
+      end
+
     end
   end
 end
