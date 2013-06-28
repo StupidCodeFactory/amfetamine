@@ -7,3 +7,4 @@ Guardfile
 doc/
 coverage/
 .rvmrc
+.rspec
