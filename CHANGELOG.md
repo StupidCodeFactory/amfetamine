@@ -1,4 +1,4 @@
-## DEV
+## 0.4.2
 
 * Simplified/fixed caching in Rails development mode (it is 60 seconds and is working now)
 
