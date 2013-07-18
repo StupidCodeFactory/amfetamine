@@ -11,23 +11,8 @@ describe Amfetamine::Base do
       options.should include(:expires_in)
     end
 
-    specify 'exires_in option is set to an integer value' do
-      options[:expires_in].should be_an_integer
-    end
-  end
-
-  describe 'initialization in a Rails application' do
-    let(:memcached_instance) { Amfetamine::Config.memcached_instance }
-    let(:options) { memcached_instance.instance_variable_get(:@options) }
-
-    let(:rails) { double(env: 'production') }
-
-    before do
-      stub_const('Rails', rails)
-    end
-
-    it 'sets expiration time to the default value' do
-      options[:expires_in].should eq(Amfetamine::Config.send(:default_expiration_time))
+    specify 'exires_in option is set by default to 10 minutes' do
+      options[:expires_in].should eq(10.minutes)
     end
   end
 

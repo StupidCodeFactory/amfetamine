@@ -1,3 +1,7 @@
+## DEV
+
+* Simplified/fixed caching in Rails development mode (it is 60 seconds and is working now)
+
 ## 0.4.1
 
 * Fixed bundling in Rails applications

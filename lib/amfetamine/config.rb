@@ -34,8 +34,6 @@ module Amfetamine
         @disable_caching = value
       end
 
-      private
-
       def default_memcached_options
         {
           expires_in: expiration_time
@@ -43,20 +41,11 @@ module Amfetamine
       end
 
       def expiration_time
-        if defined?(Rails)
-          method = "expiration_time_for_#{ Rails.env }"
-          return send(method) if respond_to?(method)
+        if defined?(::Rails) && Rails.env.development?
+          60.seconds
+        else
+          10.minutes
         end
-
-        default_expiration_time
-      end
-
-      def expiration_time_for_development
-        60.seconds
-      end
-
-      def default_expiration_time
-        10.minutes
       end
 
     end
